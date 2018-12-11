@@ -1,22 +1,16 @@
 .App {
   text-align: center;
-  background-color: #282c34;
 
 }
 
 .App-logo {
 /*  animation: App-logo-spin infinite 20s linear;
  */ 
-  height: 40vmin;
-  width: max-content;
   align-content: center;
   align-items: center;
   vertical-align: 'center';
-  align-self:center ;
-  margin-left: 0cm;
 }
 .App-input{
-  width: 10ch;
   align-content: center;
   align-items: center;
   align-self: center

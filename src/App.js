@@ -14,10 +14,17 @@ import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Radio from '@material-ui/core/Radio';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import RadioGroup from '@material-ui/core/RadioGroup';
+
 const classes = {
   root: {
     flexGrow: 1,
-    
+    overflow: 'hidden',
+
   },
   paper: {
    //padding: theme.spacing.unit * 2,
@@ -39,126 +46,185 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      number1:18,
-      number2:18,
-      number3:18,
+      abecedario:'a,b,c,d,e,f,g,h,i,j,k,l,m,n,ñ,o,p,q,r,s,t,u,v,w,x,y,z',
+      sustiTextOr:'i,d,d',
+      sustiText:'5,2,6,3',
+      encriptado:'ella no te ama',
+      value:'inicia',
       positionTop: 200, // Just so the popover can be spotted more easily
       positionLeft: 400, // Same as above
     }
   }
-
-
-  handleNumberInputChange = key => event => {
-    if(event.target.value > 5 && event.target.value<24){
-      let number= event==='number1'?this.state.number2:this.state.number2;
-      const valor = parseInt(event.target.value, 10);
-      const value3 = 54 - valor - number;
-      this.setState({
-        [key]: parseInt(event.target.value, 10),
-        number3:value3,
-      });
-    }
-
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
   };
 
-  componentDidUpdate( prevState ) {
-    if (  this.state.changue ===true ) {
-        const numberRest= 54- this.state.number1- this.state.number2;
-        this.setState({number3:numberRest,changue:false });
-  
-        // return response
+
+
+  encript(){
+    const {positionTop,
+    positionLeft,
+    abecedario,
+    sustiTextOr,
+    sustiText
+  } = this.state;
+
+  const fragmentSusti= sustiText.split(',');
+  const number= [];
+  fragmentSusti.map(item => {
+    number.push(parseInt(item));  }) 
+  const keyp = sustiTextOr.split(','); 
+  let newitem=abecedario.split(',');
+  let nnumber=0;
+  let nkey=0;
+  const newnumber=[];
+  const newkeyp=[];
+  let indice=0;
+  const cript= [];
+  let t=indice; //podsition actual
+  newitem.map( (letter, key) => {
+    if( nkey > keyp.length-1){
+      nkey=0;
     }
+    if( nnumber > number.length-1){
+      nnumber=0;
+    }
+    newnumber.push(number[nnumber]);
+    newkeyp.push(keyp[nkey]);
+
+    nnumber= nnumber+1;
+    nkey= nkey+1;
+  })
+
+ 
+
+
+  while (indice < newnumber.length){
+if(this.state.value ==='inicia' && indice===0 ){
+  t=0;
+}
+ else{
+  if(newitem.length === 1){
+      t=0;
+    } else {
+          if( newkeyp[indice]==='i'){
+              if ( t - newnumber[indice] >=0){
+                t =  t - newnumber[indice];
+              } else {
+                t =  t - newnumber[indice];
+                while( t<0){
+                  t = newitem.length  + t; 
+                }
+              }
+          }
+          else {
+
+                if ( t + newnumber[indice]  <= newitem.length  ){
+                  if(t === 0 && indice===0){
+                    t =  t + newnumber[indice]  ;
+                  }
+                  else{
+                    t =  t + newnumber[indice] -1 ;
+                  }
+                } else {
+                  if(t + newnumber[indice] -1 === newitem.length ){
+                    t = 0;
+                  }
+                    else {
+                       t =  t + newnumber[indice];
+                        let count=1;
+                        if(t>newitem.length){
+                          while( t>newitem.length ){
+                            if(indice!==0){
+                            }
+                            t =  t- newitem.length; 
+                          }
+                          t=t-1;
+                        }
+                    }
+                }
+          }
+          }
+ }
+  
+   
+    cript.push(newitem[t]);
+    newitem.splice(newitem.indexOf(newitem[t]), 1);
+    indice=indice+1;
+  }
+  //return(cript);
+ //console.warn('sustitucion',cript);
+  this.setState({encriptado:cript});
+}
+handleChange2 = event => {
+  this.setState({ value: event.target.value });
+};
+  componentDidUpdate( prevState ) {
   }
 
   render() {
     const {
       positionTop,
       positionLeft,
-      number1,
-      number2,
-      number3,
+      abecedario,
+      sustiTextOr,
+      sustiText,
+      encriptado,
+      value
     } = this.state;
+    console.log(encriptado)
+    console.log(value)
       return (
-        <div className={classes.root}>
-          <Grid container spacing={24}>
-            <Grid item xs={12}>
-            <Card className={classes.card}>
-      <CardActionArea>
-        <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          className={classes.media}
-          height="240"
-          src= {logo}
-          title="Contemplative Reptile"
-        />
-        <CardContent>
-          <Typography align='center' gutterBottom variant="h5" component="h2">
-            Encríptamelo
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-            <FormControl className="App-Formcontrol">
-              <InputLabel className="App-inputLabel" >Letras con método de sustitución</InputLabel>
-              <Input
-                className="App-input"
-                id="position-top"
-                type="number"
-                value={number1}
-                onChange={this.handleNumberInputChange('number1')}
+        <div className="App">
+                <h3>ELIGE PRRO</h3>
+
+      <FormControl component="fieldset" className={classes.formControl}>
+          <RadioGroup
+            aria-label="Gender"
+            name="gender1"
+            className={classes.group}
+            value={this.state.value}
+            onChange={this.handleChange2}
+          >
+            <FormControlLabel value="inicia" control={<Radio />} label="inicia" />
+            <FormControlLabel value="empieza" control={<Radio />} label="empieza" />
+          </RadioGroup>
+        </FormControl>
+        <h3>PON ABECEDARIO PRRO</h3>
+            <TextField
+              id="standard-name"
+              label="Name"
+              value={this.state.abecedario}
+              onChange={this.handleChange('abecedario')}
+              margin="normal"
+            />
+
+                  <h3>PON EL IDI PRRO</h3>
+                  <TextField
+                id="standard-name2"
+                label="IDI PRRON"
+                className={classes.textField}
+                value={sustiTextOr}
+                onChange={this.handleChange('sustiTextOr')}
+                margin="normal"
               />
-            </FormControl>
-            &nbsp;
-            <FormControl className="App-Formcontrol">
-              <InputLabel className="App-inputLabel" >Letras con método de inversión</InputLabel>
-              <Input
-                className="App-input"
-                id="position-left"
-                type="number"
-                value={number2}
-                onChange={this.handleNumberInputChange('number2')}
-              />
-            </FormControl>
-            &nbsp;
-            <FormControl className="App-Formcontrol">
-              <InputLabel className="App-inputLabel" >Letras con método de transposición</InputLabel>
-              <Input
-                className="App-input"
-                id="position-left"
-                type="number"
-                value={number3}
-               // onChange={this.handleNumberInputChange('positionLeft')}
-              />
-            </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Paper className={classes.paper}>xs=12 sm=6</Paper>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Paper className={classes.paper}>xs=6 sm=3</Paper>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Paper className={classes.paper}>xs=6 sm=3</Paper>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Paper className={classes.paper}>xs=6 sm=3</Paper>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Paper className={classes.paper}>xs=6 sm=3</Paper>
-            </Grid>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="position-top">anchorPosition.top</InputLabel>
-              <Input
-                id="position-top"
-                type="number"
-                value={positionTop}
-                onChange={this.handleNumberInputChange("positionTop")}
-              />
-            </FormControl>
-          </Grid>
+                                <h3>PON EL NUMERO PRRO</h3>
+                                <TextField
+                id="standard-name3"
+                label="numeros PRRON"
+                className={classes.textField}
+                value={sustiText}
+                onChange={this.handleChange('sustiText')}
+                margin="normal"
+              />                  
+
+              <h3>DAME CLICK PRRO</h3>
+            <Button variant="contained" onClick={() => this.encript()}>
+              Default
+            </Button>
+            <h3>{encriptado}</h3>
         </div>
       );
     
